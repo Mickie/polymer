@@ -1,0 +1,137 @@
+<link rel="import" href="../../polymer/polymer.html">
+
+<!-- 搜索列表 -->
+
+<dom-module id="search-box-base">
+    <style>
+        :host {
+            display: block;
+            width: var(--search-box-width);
+        }
+        .group-search {
+            margin-bottom: 10px;
+        }
+
+        label {
+            font-size: 14px;
+            color: #7f7f7f;
+        }
+
+        .input-group {
+            position: relative;
+            margin-top: 5px;
+            padding: var(--input-padding,0);
+        }
+
+        input.form-control {
+            width: 100%;
+            outline: none;
+            -webkit-box-sizing: border-box;
+            box-sizing: border-box;
+            border-radius: var(--input-border-radius,0);
+            border: 1px solid var(--input-border-color,currentcolor);
+        }
+
+        .t-list {
+            background: var(--ul-bg,#fbfbfb);
+            padding: 0 6px;
+            margin:0;
+        }
+
+        .t-list li {
+            list-style-type: none;
+            cursor: pointer;
+            font-size: 13px;
+            color: var(--list-li-color,black);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .t-list li:hover{
+            background: var(--list-li-hover-bg,lightgrey);
+        }
+        .t-list > li:nth-child(1){
+            margin-top: 5px;
+        }
+        .t-list > li:last-child(1){
+            margin-bottom: 5px;
+        }
+    </style>
+    <template>
+        <div class="form-group group-search">
+
+            <template is="dom-if" if="[[labelShow]]===true">
+                <label>[[label]]</label>
+            </template>
+
+            <div class="input-group my-search-group">
+                <input class="form-control" value="{{searchTxt::input}}" placeholder="搜索...">
+                <span class="glyphicon glyphicon-search"></span>
+            </div>
+            <ul class="t-list">
+                <div id="repeater"></div>
+                <content></content>
+            </ul>
+        </div>
+    </template>
+
+    <script>
+        Polymer({
+            is: 'search-box-base',
+            behaviors: [
+                Polymer.Templatizer
+            ],
+            properties: {
+                label: String,
+                collection: String,
+                labelShow: {
+                    type: Boolean,
+                    value: false
+                },
+                closeIfNoMatch: {
+                    type: Boolean,
+                    value: false
+                },
+                data: {
+                    type: Array,
+                    computed: '_parse(collection)'
+                }
+            },
+            ready: function () {
+                if (typeof(this.label) !== "undefined") {
+                    this.label = this._upperCaseFirst(this.label);
+                }
+                this.ul = this.$$(".t-list");
+                var template = Polymer.dom(this).querySelector('template');
+                this.templatize(template);
+                var items = this.data;
+                for (var i = 0, l = items.length; i < l; i++) {
+                    var clone = this.stamp({});
+                    clone.member = items[i];
+                    Polymer.dom(this.$.repeater).appendChild(clone.root);
+                }
+                this.lis = this.ul.querySelectorAll("[data]");
+            },
+            observers: [
+                'onInput(searchTxt)'
+            ],
+            onInput: function (v) {
+                var self = this;
+                this.lis.forEach(function (el) {
+                    el.show = self._ifMatch(v, el.getAttribute("data"));
+                })
+                v.length ? this._close(this.ul, false) : this._close(this.ul, this.closeIfNoMatch);
+            },
+            _upperCaseFirst: function (string) {
+                return string[0].toUpperCase() + string.slice(1);
+            },
+            _ifMatch: function (iptV, data) {
+                return data.length && data.toUpperCase().indexOf(iptV.toUpperCase()) !== -1;
+            },
+            _close: function (el, closeTrue) {
+                closeTrue ? el.style.display = 'none' : el.style.display = 'block';
+            },
+            _parse: JSON.parse
+        })
+    </script>
+</dom-module>

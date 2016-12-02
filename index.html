@@ -1,0 +1,71 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=yes">
+    <title>sample-el</title>
+    <script src="../webcomponentsjs/webcomponents-lite.js"></script>
+    <link rel="import" href="../iron-component-page/iron-component-page.html">
+    <link rel="import" href="components/sample-el.html">
+    <link rel="import" href="components/search-box-base.html">
+    <link rel="import" href="components/li-item.html">
+    <link rel="import" href="components/dropdown-checkbox.html">
+    <link rel="import" href="components/li-checkbox.html">
+    <link rel="import" href="components/dropdown-btn.html">
+    <style is="custom-style">
+
+        section{
+            display: table;
+            width: 400px;
+            margin: 0 auto;
+            border: 2px dotted #ddd;
+            padding: 10px 15px;
+            margin-bottom: 15px;
+        }
+
+        search-box-base{
+            --search-box-width: 100%;
+            --input-border-radius: 3px;
+            --input-border-color: #ddd;
+            --input-padding: 5px;
+            --list-li-color: black;
+            --list-li-hover-bg: lightgrey;
+            --ul-bg: #fbfbfb;
+        }
+    </style>
+  </head>
+  <body>
+    <!--<iron-component-page src="components/sample-el.html"></iron-component-page>-->
+
+    <section>
+        <h2>search-box</h2>
+        <search-box-base label="label名" collection='["t1","t2"]'>
+            <template>
+                <li-item data$={{member}} show></li-item>
+            </template>
+        </search-box-base>
+    </section>
+
+    <section>
+        <h2>dropdown checkbox</h2>
+        <dropdown-checkbox label="label名" selected='["1","2"]'>
+            <search-box-base collection='["1","2","3","4"]'>
+                <template>
+                    <li-checkbox data$={{member}} value$={{member}} show></li-checkbox>
+                </template>
+            </search-box-base>
+        </dropdown-checkbox>
+    </section>
+
+    <section>
+        <h2>dropdown button</h2>
+        <dropdown-btn btn-txt="按钮" collection='["1","2","3"]'></dropdown-btn>
+    </section>
+
+    <script>
+        window.addEventListener("WebComponentsReady",function(){
+            //webComponentsLoad ready
+        })
+    </script>
+  </body>
+</html>

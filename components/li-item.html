@@ -1,0 +1,29 @@
+<link rel="import" href="../../polymer/polymer.html">
+<dom-module id="li-item">
+    <style>
+        :host li{
+            display:none;
+        }
+        :host[show] li{
+            display:block;
+        }
+    </style>
+    <template id="member">
+        <li on-click="someFunc">{{data}}</li>
+    </template>
+    <script>
+        Polymer({
+            is:'li-item',
+            properties:{
+                show:{
+                    type:Boolean,
+                    value: false,
+                    reflectToAttribute: true
+                }
+            },
+            someFunc: function(e){
+                console.log("someFunc triggered");
+            }
+        })
+    </script>
+</dom-module>

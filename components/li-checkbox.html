@@ -1,0 +1,34 @@
+<link rel="import" href="../../polymer/polymer.html">
+<dom-module id="li-checkbox">
+    <style>
+        :host li {
+            display: none;
+        }
+
+        :host[show] li {
+            display: block;
+        }
+
+        span {
+            position: relative;
+            top: 3px;
+        }
+    </style>
+    <template>
+        <li>
+            <input type="checkbox" data-val$="{{value}}"><span>{{data}}</span>
+        </li>
+    </template>
+    <script>
+        Polymer({
+            is: 'li-checkbox',
+            properties: {
+                show: {
+                    type: Boolean,
+                    value: false,
+                    reflectToAttribute: true
+                }
+            }
+        })
+    </script>
+</dom-module>

@@ -1,0 +1,126 @@
+<link rel="import" href="../../polymer/polymer.html">
+
+<dom-module id="dropdown-checkbox">
+    <style>
+        :host .dp-dropdown-menu {
+            display: none;
+            padding: 0;
+            margin-top:0;
+        }
+
+        :host[open] .dp-dropdown-menu {
+            display: block;
+        }
+
+        .dp-input-group {
+            width: var(--dropdown-input-width, 100%);
+        }
+
+        label {
+            display: none;
+        }
+
+        .dp-input {
+            width: 100%;
+            outline: none;
+            text-align: center;
+            -webkit-box-sizing: border-box;
+            box-sizing: border-box;
+            cursor: pointer;
+            border-radius: var(--input-border-radius, 0);
+            border: 1px solid var(--input-border-color, currentcolor);
+        }
+
+        .dp-input::-webkit-input-placeholder {
+            text-align: center;
+        }
+
+        ul {
+            background: var(--ul-bg, #fbfbfb);
+        }
+
+        li {
+            list-style: none;
+            cursor: pointer;
+            font-size: 13px;
+            color: var(--list-li-color, black);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+    </style>
+    <template>
+        <div class="dp-input-group">
+            <label>{{label}}</label>
+            <input class="dp-input" placeholder="请选择" on-click="switchMenu" readonly>
+            <ul class="dp-dropdown-menu">
+                <content></content>
+            </ul>
+        </div>
+    </template>
+    <script>
+        Polymer({
+            is: 'dropdown-checkbox',
+            properties: {
+                open: {
+                    type: Boolean,
+                    value: false,
+                    reflectToAttribute: true
+                },
+                label: String,
+                selected: String,
+                checkedItem: {
+                    type: Object,
+                    notify: true,
+                    value: function () {
+                        return {};
+                    }
+                }
+            },
+            ready: function () {
+                this.checkedItem.label = this.label;
+                this.checkedItem.value = [];
+            },
+            attached: function(){
+                var self = this;
+                this.lis = this.querySelectorAll("li");
+                if (this.selected && this.selected.length) {
+                    JSON.parse(this.selected).forEach(function (s) {
+                        self.querySelector("[data-val='" + s + "']").setAttribute('checked', true);
+                        self.push("checkedItem.value", s.toString());
+                    })
+                }
+                this.lis.forEach(function (li) {
+                    li.querySelector("[type=checkbox]").addEventListener("click", function (e) {
+                        self.checkit(e);
+                    }, false)
+                })
+            },
+            switchMenu: function () {
+                this.open = !this.open;
+            },
+            checkit: function (e) {
+                var val = e.target.getAttribute('data-val');
+                var idx = this._included(val);
+                if (idx > -1) {
+                    this.splice("checkedItem.value", idx, 1);
+                } else {
+                    this.push("checkedItem.value", val.toString());
+                }
+            },
+            observers: ['updateInputVal(checkedItem.value.splices)'],
+            updateInputVal: function (changes) {
+                if (changes) {
+                    var ipt = this.querySelector(".dp-input");
+                    var txt = this.checkedItem && this.checkedItem.value.length ? "已选择" + this.checkedItem.value.length + "项" : "";
+                    ipt.setAttribute('value', txt);
+                }
+            },
+            _included: function (val) {
+                return this.checkedItem.value.indexOf(val.toString());
+            }
+        })
+    </script>
+
+</dom-module>
