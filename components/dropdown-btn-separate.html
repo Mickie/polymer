@@ -1,0 +1,147 @@
+<link rel="import" href="../../polymer/polymer.html">
+
+<dom-module id="dropdown-btn-separate">
+    <style>
+        :host {
+            display: block;
+            width: var(--btn-width, 100px);
+        }
+
+        :host ul {
+            display: none;
+            margin: 0;
+            padding: 0;
+            background: #fbfbfb;
+        }
+
+        :host[open] ul {
+            display: block;
+            border-left: 1px solid var(--btn-border-color, black);
+            border-bottom: 1px solid var(--btn-border-color, black);
+            border-right: 1px solid var(--btn-border-color, black);
+            border-bottom-left-radius: var(--btn-border-radius, 0);
+            border-bottom-right-radius: var(--btn-border-radius, 0);
+        }
+
+        :host[open] > div {
+            border-bottom-left-radius: 0;
+            border-bottom-right-radius: 0;
+        }
+
+        :host[open] .caret {
+            transform: rotateZ(180deg) scale(0.8, 0.8);
+        }
+
+        :host > div {
+            display: table;
+            position: relative;
+            border: 1px solid var(--btn-border-color, black);
+            border-radius: var(--btn-border-radius, 0);
+        }
+
+        input {
+            width: 100%;
+            display: table-cell;
+            outline: none;
+            border: 0;
+            -webkit-box-sizing: border-box;
+            box-sizing: border-box;
+            color: var(--btn-color, black);
+            background: var(--btn-bg, transparent);
+            text-align: center;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .addon {
+            display: table-cell;
+            width: 20px;
+            cursor: pointer;
+            text-align: center;
+            vertical-align: middle;
+            border-left: 1px solid var(--btn-border-color, black);
+
+        }
+
+        .caret {
+            display: inline-block;
+            width: 0;
+            height: 0;
+            vertical-align: middle;
+            border-top: 8px solid;
+            border-left: 6px solid transparent;
+            border-right: 6px solid transparent;
+            transform: scale(0.8, 0.8);
+            transition: all .4s ease;
+        }
+
+        li {
+            list-style-type: none;
+            font-size: 13px;
+            padding: 1px 5px;
+            cursor: pointer;
+            border-bottom: 1px solid #ddd;
+        }
+
+        li:last-of-type {
+            border: 0 !important;
+        }
+
+        li:hover {
+            background: #ddd;
+        }
+    </style>
+    <template>
+        <div class="dropdown-btn">
+            <input class="input" value$={{btnTxt}} readonly>
+            <div class="addon">
+                <span class="caret"></span>
+            </div>
+        </div>
+        <ul class="menu">
+            <template is="dom-repeat" items="{{datas}}">
+                <li data-val$="{{item}}">{{item}}</li>
+            </template>
+        </ul>
+    </template>
+    <script>
+        Polymer({
+            is: "dropdown-btn-separate",
+            properties: {
+                btnTxt: {
+                    type: String,
+                    value: "下拉按钮"
+                },
+                collection: String,
+                open: {
+                    type: Boolean,
+                    value: false,
+                    reflectToAttribute: true
+                },
+                datas: {
+                    type: Array,
+                    computed: "_parse(collection)"
+                }
+            },
+            attached: function () {
+                var self = this;
+                this.lis = this.querySelectorAll("li");
+                this.btn = this.querySelector(".addon");
+                this.listen(this.btn, 'click', 'onInputClick');
+                this.lis.forEach(function (li) {
+                    self.listen(li, 'click', "onLiClick");
+                })
+            },
+            onInputClick: function () {
+                this.open = !this.open;
+            },
+            onLiClick: function (e) {
+                this.btnTxt = e.target.getAttribute("data-val");
+                this.open = false;
+            },
+            _parse: JSON.parse
+        })
+    </script>
+
+</dom-module>

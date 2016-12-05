@@ -11,16 +11,18 @@
     <link rel="import" href="components/li-item.html">
     <link rel="import" href="components/dropdown-checkbox.html">
     <link rel="import" href="components/li-checkbox.html">
+    <link rel="import" href="components/dropdown-btn-separate.html">
     <link rel="import" href="components/dropdown-btn.html">
     <style is="custom-style">
-
+        /* prevent affect lightdom element */
         section{
             display: table;
-            width: 400px;
-            margin: 0 auto;
+            width: 300px;
+            float: left;
             border: 2px dotted #ddd;
             padding: 10px 15px;
             margin-bottom: 15px;
+            margin-right: 15px;
         }
 
         search-box-base{
@@ -31,6 +33,18 @@
             --list-li-color: black;
             --list-li-hover-bg: lightgrey;
             --ul-bg: #fbfbfb;
+        }
+        .menu{
+            border: 1px solid blue;
+        }
+        .add-icon{
+           font-size: 16px;
+           line-height:1;
+           position:relative;
+           top: 1px;
+        }
+        .add-icon:before{
+            content: "\002b";
         }
     </style>
   </head>
@@ -58,8 +72,15 @@
     </section>
 
     <section>
+        <h2>dropdown button with separator</h2>
+        <dropdown-btn-separate btn-txt="按钮" collection='["1","2","3"]'></dropdown-btn-separate>
+    </section>
+
+    <section>
         <h2>dropdown button</h2>
-        <dropdown-btn btn-txt="按钮" collection='["1","2","3"]'></dropdown-btn>
+        <dropdown-btn btn-txt="按钮" collection='["1","2","3"]'>
+            <span class="add-icon"></span>
+        </dropdown-btn>
     </section>
 
     <script>
